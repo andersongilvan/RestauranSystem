@@ -2,11 +2,7 @@ import type { NextFunction, Request, Response } from 'express'
 import z from 'zod'
 import { makeRegisterProductService } from '../services/@factory/makeRegisterProductService'
 
-export async function registerProductController(
-	request: Request,
-	response: Response,
-	next: NextFunction,
-) {
+export async function registerProductController(request: Request, response: Response, next: NextFunction) {
 	const registerProductService = makeRegisterProductService()
 
 	try {
@@ -14,9 +10,7 @@ export async function registerProductController(
 			name: z.string().nonempty({ message: 'Name is required' }),
 			description: z.string().nonempty({ message: 'Name is required' }),
 			imgUrl: z.string().url({ message: 'Image URL must be a valid URL' }),
-			price: z
-				.number()
-				.positive({ message: 'Price must be a positive number' }),
+			price: z.number().positive({ message: 'Price must be a positive number' }),
 		})
 
 		const { name, description, imgUrl, price } = bodySchema.parse(request.body)

@@ -1,4 +1,4 @@
-export interface Product {
+export type Product = {
 	id: number
 	name: string
 	description: string
@@ -8,9 +8,16 @@ export interface Product {
 	updated_at: Date
 }
 
-export interface CreateProductInput {
+export type CreateProductInput = {
 	name: string
 	description: string
 	imgUrl: string
 	price: number
+}
+
+export type UpdateProductInput = {
+	name?: string
+	description?: string
+	imgUrl?: string
+	price?: number
 }

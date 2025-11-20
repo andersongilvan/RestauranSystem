@@ -16,15 +16,8 @@ interface RegisterProductResponse {
 export class RegisterProductService {
 	constructor(private productRepository: ProductRepository) {}
 
-	async execute({
-		name,
-		description,
-		imgUrl,
-		price,
-	}: RegisterProductRequest): Promise<RegisterProductResponse> {
-		const productWhithSameName = await this.productRepository.findByName(
-			name.toLocaleLowerCase(),
-		)
+	async execute({ name, description, imgUrl, price }: RegisterProductRequest): Promise<RegisterProductResponse> {
+		const productWhithSameName = await this.productRepository.findByName(name.toLocaleLowerCase())
 
 		if (productWhithSameName) {
 			throw new ResourceAlreadyExistError('Product whith same name duplicated')
