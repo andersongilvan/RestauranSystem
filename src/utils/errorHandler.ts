@@ -23,4 +23,7 @@ export function errorHandler(erro: Error, _request: Request, response: Response,
 	if (erro instanceof ResourceNotFoundError) {
 		return response.status(400).json({ error: erro.message })
 	}
+
+	console.log(erro)
+	return response.status(500).json(erro.message)
 }
