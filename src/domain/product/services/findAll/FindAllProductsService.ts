@@ -3,21 +3,22 @@ import type { Page } from '@/utils/Pagination'
 import type { ProductRepository } from '../../repository/ProductRepository'
 
 interface FindAllProductsServiceRequest {
+	productName?: string
 	page: number
 }
 
 interface FindAllProductsServiceResponse {
-	products: Page<Product>
+	page: Page<Product>
 }
 
 export class FindAllProdctsService {
 	constructor(private productRepository: ProductRepository) {}
 
-	async execute({ page }: FindAllProductsServiceRequest): Promise<FindAllProductsServiceResponse> {
-		const products = await this.productRepository.findAll(page)
+	async execute({ page, productName }: FindAllProductsServiceRequest): Promise<FindAllProductsServiceResponse> {
+		const pageProducts = await this.productRepository.findAll(page, productName)
 
 		return {
-			products,
+			page: pageProducts,
 		}
 	}
 }

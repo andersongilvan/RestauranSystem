@@ -13,7 +13,7 @@ export class PostgresRepository implements ProductRepository {
 			[id],
 		)
 	}
-	async findAll(page: number): Promise<Page<Product>> {
+	async findAll(page: number, productName?: string): Promise<Page<Product>> {
 		const limit = 10
 
 		const ofSet = (page - 1) * limit
@@ -26,6 +26,26 @@ export class PostgresRepository implements ProductRepository {
 
 		const totalPages = Math.ceil(totalItems / limit)
 
+		if (productName) {
+			const { rows } = await db.raw<{ rows: Product[] }>(
+				`
+				SELECT *
+				FROM products
+				WHERE name ILIKE ?
+			`,
+				[`%${productName}%`],
+			)
+
+			return {
+				items: rows,
+				info: {
+					totalItems,
+					totalPages,
+					currentPage: page,
+				},
+			}
+		}
+
 		const { rows } = await db.raw<{ rows: Product[] }>(
 			`
 			SELECT *
@@ -37,9 +57,11 @@ export class PostgresRepository implements ProductRepository {
 
 		return {
 			items: rows,
-			totalItems,
-			totalPages,
-			currentPage: page,
+			info: {
+				totalItems,
+				totalPages,
+				currentPage: page,
+			},
 		}
 	}
 
@@ -72,7 +94,6 @@ export class PostgresRepository implements ProductRepository {
 		if (rows.length === 0) {
 			return null
 		}
-
 		const product = rows[0]
 
 		return product
@@ -83,10 +104,11 @@ export class PostgresRepository implements ProductRepository {
 			`
 			SELECT *
 			FROM products
-			WHERE name = ?
+			WHERE LOWER(name) = LOWER(?)
 		`,
 			[name],
 		)
+
 		if (rows.length === 0) {
 			return null
 		}
@@ -100,7 +122,7 @@ export class PostgresRepository implements ProductRepository {
 		const { rows } = await db.raw<{ rows: Product[] }>(
 			`
 			INSERT INTO products (name, description, img_url, price)
-			VALUES (?, ?, ?, ?)
+			VALUES (LOWER(?), LOWER(?), LOWER(?), ?)
 			RETURNING *
 		`,
 			[name, description, imgUrl, price],

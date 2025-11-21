@@ -3,11 +3,13 @@ import { makeFindAllProductsService } from '../services/@factory/makeFindAllProd
 
 export async function findAllProductsController(request: Request, response: Response, next: NextFunction) {
 	try {
+		const name = String(request.query.name || '')
+
 		const pageNumber = Number(request.query.page) || 1
 
 		const findAllProductsService = makeFindAllProductsService()
 
-		const products = await findAllProductsService.execute({ page: pageNumber })
+		const products = await findAllProductsService.execute({ page: pageNumber, productName: name })
 
 		return response.status(200).json(products)
 	} catch (error) {

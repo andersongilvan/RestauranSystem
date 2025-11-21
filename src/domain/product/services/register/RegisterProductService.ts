@@ -17,15 +17,15 @@ export class RegisterProductService {
 	constructor(private productRepository: ProductRepository) {}
 
 	async execute({ name, description, imgUrl, price }: RegisterProductRequest): Promise<RegisterProductResponse> {
-		const productWhithSameName = await this.productRepository.findByName(name.toLocaleLowerCase())
+		const productWhithSameName = await this.productRepository.findByName(name)
 
 		if (productWhithSameName) {
-			throw new ResourceAlreadyExistError('Product whith same name duplicated')
+			throw new ResourceAlreadyExistError('This product already exsists')
 		}
 
 		const product = await this.productRepository.create({
 			name: name.toLowerCase(),
-			description: description.toLowerCase(),
+			description,
 			imgUrl,
 			price,
 		})

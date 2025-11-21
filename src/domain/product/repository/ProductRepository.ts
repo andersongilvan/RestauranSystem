@@ -6,6 +6,6 @@ export interface ProductRepository {
 	findByName(name: string): Promise<Product | null>
 	findById(id: number): Promise<Product | null>
 	update(id: number, data: Partial<UpdateProductInput>): Promise<Product>
-	findAll(page: number): Promise<Page<Product>>
+	findAll(page: number, productName?: string): Promise<Page<Product>>
 	delete(id: number): Promise<void>
 }
